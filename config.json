@@ -1,0 +1,6 @@
+{
+  "PORT": 3360,
+  "mongoose": {
+    "url": "mongodb://localhost/test"
+  }
+}
