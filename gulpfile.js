@@ -33,6 +33,8 @@ gulp.task('uglify', function() {
 gulp.task('watch', function() {
   livereload.listen();
   gulp.watch('public/css/*.styl', ['stylus']);
+  gulp.watch('views/**/*.jade').on('change', livereload.changed);
+  gulp.watch('public/js/**/*.js').on('change', livereload.changed);
 });
 
 gulp.task('default', ['stylus', 'watch']);

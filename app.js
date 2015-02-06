@@ -11,6 +11,7 @@ var express = require('express'),
     _ = require('lodash'),
 
     routes = require('./routes'),
+    postNormalize = require('./lib/postNormalize'),
 
     app = express();
 
@@ -39,6 +40,8 @@ app.use(session({
     defaultExpirationTime: 1000 * 60 * 60 * 24 * 2 // 48 hours
   }, function() {})
 }));
+
+app.use(postNormalize);
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
