@@ -18,15 +18,6 @@ mongoose.connect(config.get('mongoose:url'), {server: {auto_reconnect: true}});
 //autoIncrement.initialize(connection);
 
 module.exports = {
-  //Options: require('./Options'),
-  //Token: require('./Token'),
-  //User: require('./User'),
-  //Album: require('./Album'),
-  //Order: require('./Order')
+  User: require('./User')
 };
 
-//module.exports.Options.findOne({}).exec(function(err, Options) {
-//  if(!Options) {
-//    new module.exports.Options().save(function() {});
-//  }
-//});
