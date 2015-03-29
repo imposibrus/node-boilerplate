@@ -4,7 +4,7 @@ var express = require('express'),
     logger = require('morgan'),
     config = require('./lib/config'),
     session = require('express-session'),
-    MongoStore = require('connect-mongo')(session),
+    sessionStore = require('./lib/sessionStore'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
 
@@ -22,6 +22,7 @@ app.set('view engine', 'jade');
 // uncomment after placing your favicon in /public
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
+/* istanbul ignore next */
 if(app.get('env') === 'development') {
   app.use(logger('dev'));
   //app.locals.pretty = true;
@@ -31,14 +32,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(session({
-  secret: 'node-boilerplate',
+  secret: config.get('sessionSecret'),
   resave: true,
   saveUninitialized: false,
-  store: new MongoStore({
-    url: config.get('mongoose:url'),
-    autoReconnect: true,
-    defaultExpirationTime: 1000 * 60 * 60 * 24 * 2 // 48 hours
-  }, function() {})
+  store: sessionStore
 }));
 
 app.use(postNormalize);
@@ -55,34 +52,43 @@ app.locals._ = _;
 app.use('/', routes);
 
 // catch 404 and forward to error handler
+/* istanbul ignore next */
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 // error handlers
 
 // development error handler
 // will print stacktrace
+/* istanbul ignore next */
 if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    if(req.xhr) {
+      return res.send({status: err.status || 500, message: err.message, error: err});
+    }
+    res.render('error', {
+      message: err.message,
+      error: err
     });
+  });
 }
 
 // production error handler
 // no stacktraces leaked to user
+/* istanbul ignore next */
 app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+  res.status(err.status || 500);
+  if(req.xhr) {
+    return res.send({status: err.status || 500, message: err.message, error: {}});
+  }
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
 });
 
 

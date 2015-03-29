@@ -10,3 +10,5 @@ public/storage
 
 public/css/main.css
 public/js/main.min.*
+
+public/coverage
