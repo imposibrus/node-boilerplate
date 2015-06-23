@@ -3,30 +3,40 @@ var gulp = require('gulp'),
     stylus = require('gulp-stylus'),
     livereload = require('gulp-livereload'),
     cssMin = require('gulp-minify-css'),
-    rename = require("gulp-rename"),
-    uglify = require('gulp-uglifyjs'),
-    header = require('gulp-header'),
-    pkg = require('./package.json');
+    uglify = require('gulp-uglify'),
+    concat = require('gulp-concat'),
+    sourcemaps = require('gulp-sourcemaps');
 
 gulp.task('stylus', function () {
   gulp.src(['public/css/main.styl'])
+      .pipe(sourcemaps.init())
       .pipe(stylus())
+      .pipe(sourcemaps.write('./'))
       .pipe(gulp.dest('public/css'))
       .pipe(livereload());
 });
 
 gulp.task('cssmin', function() {
-  gulp.src(['public/css/main.css'])
+  gulp.src([
+    'public/css/main.css'
+  ])
+      .pipe(sourcemaps.init())
       .pipe(cssMin())
-      .pipe(rename({suffix: '.min'}))
+      .pipe(concat('build.min.css'))
+      .pipe(sourcemaps.write('./'))
       .pipe(gulp.dest('public/css'));
 });
 
 gulp.task('uglify', function() {
-  gulp.src(['public/js/main.js'])
-      .pipe(uglify('main.min.js', {
-        outSourceMap: true
-      }))
+  gulp.src([
+    'public/bower_components/noty/js/noty/packaged/jquery.noty.packaged.min.js',
+    'public/js/plugins.js',
+    'public/js/main.js'
+  ])
+      .pipe(sourcemaps.init())
+      .pipe(uglify())
+      .pipe(concat('build.min.js'))
+      .pipe(sourcemaps.write('./'))
       .pipe(gulp.dest('public/js'));
 });
 
@@ -38,3 +48,4 @@ gulp.task('watch', function() {
 });
 
 gulp.task('default', ['stylus', 'watch']);
+gulp.task('deploy', ['stylus', 'cssmin', 'uglify']);

@@ -48,6 +48,8 @@ app.use(function(req, res, next) {
 });
 
 app.locals._ = _;
+app.locals.config = config;
+app.locals.env = app.get('env');
 
 app.use('/', routes);
 
