@@ -51,6 +51,8 @@ if [ -f "/etc/supervisor/conf.d/$PROJECT_NAME.conf" ]; then
     else
       echo "app not running. start it";
       sudo supervisorctl start "$PROJECT_NAME"
+      echo "restoring supervisor local config file";
+      git checkout supervisor.conf
     fi
   else
     # different
@@ -70,6 +72,9 @@ if [ -f "/etc/monit/conf.d/$PROJECT_NAME" ]; then
     # different
     echo "monit config files different. start updating config";
     update_monit_config
+  else
+    echo "restoring monit local config file";
+    git checkout monit.conf
   fi
 else
   # file not exist
