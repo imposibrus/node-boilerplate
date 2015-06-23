@@ -15,6 +15,9 @@ html(lang="ru").no-js
       link(rel='stylesheet', href='/public/css/build.min.css')
     else
       link(rel='stylesheet', href='/public/css/main.css?v=' + config.get('version'))
+
+    link(rel="author", href="/humans.txt")
+
   body
     .all_wrp
       header#header
