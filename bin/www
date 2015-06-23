@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+var newrelic = require('newrelic');
+
 /**
  * Module dependencies.
  */
@@ -16,6 +18,8 @@ var app = require('../app'),
 var port = config.get('PORT');
 app.set('port', port);
 
+app.locals.newrelic = newrelic;
+
 /**
  * Create HTTP server.
  */
@@ -31,7 +35,7 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 process.on('message', function(message) {
-  if(message === 'shutdown') {
+  if(message == 'shutdown') {
     process.exit(0);
   }
 });

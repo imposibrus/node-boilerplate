@@ -15,3 +15,5 @@ public/js/build.min.js
 public/js/*.map
 
 public/coverage
+
+/logs/
