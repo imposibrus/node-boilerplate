@@ -11,6 +11,8 @@ var app = require('../app'),
     http = require('http'),
     config = require('../lib/config');
 
+process.title = config.get('title');
+
 /**
  * Get port from environment and store in Express.
  */

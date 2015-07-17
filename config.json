@@ -1,5 +1,6 @@
 {
   "PORT": 3360,
+  "title": "node-boilerplate",
   "sessionSecret": "node-boilerplate",
   "mongoose": {
     "url": "mongodb://localhost/node-boilerplate"
