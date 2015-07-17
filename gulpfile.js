@@ -42,11 +42,10 @@ gulp.task('uglify', function() {
 
 gulp.task('watch', function(cb) {
   browserSync.init({
-    //logPrefix: 'RSK',
     notify: false,
     https: false,
-    open: false
-    //proxy: 'node-boilerplate.local'
+    open: false,
+    proxy: 'node-boilerplate.local'
   }, cb);
 
   process.on('exit', function() {
