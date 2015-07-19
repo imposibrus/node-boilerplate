@@ -38,6 +38,7 @@ server.on('listening', onListening);
 
 process.on('message', function(message) {
   if(message == 'shutdown') {
+    server.close(function() {});
     process.exit(0);
   }
 });
