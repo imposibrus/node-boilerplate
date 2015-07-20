@@ -23,20 +23,10 @@ function update_supervisor_config {
   git checkout supervisor.conf
 }
 
-function update_monit_config {
-  echo "updating monit config";
-  sudo cp monit.conf /etc/monit/conf.d/"$PROJECT_NAME"
-  echo "reloading monit config";
-  sudo /usr/bin/monit reload
-  echo "restoring monit local config file";
-  git checkout monit.conf
-}
-
 echo "replacing template variables in config files";
 sed -i "s:{{CWD}}:$CWD:g" nginx.conf
 sed -i "s:{{USER}}:$USER:g" supervisor.conf
 sed -i "s:{{CWD}}:$CWD:g" supervisor.conf
-sed -i "s:{{CWD}}:$CWD:g" monit.conf
 
 if [ -f "/etc/supervisor/conf.d/$PROJECT_NAME.conf" ]; then
   # file exist
@@ -63,30 +53,6 @@ else
   # file not exist
   echo "supervisor config file is not exist. start updating config";
   update_supervisor_config
-fi
-
-if [ -f "/etc/monit/conf.d/$PROJECT_NAME" ]; then
-  # file exist
-  echo "monit config file already exist";
-  if ! `diff monit.conf /etc/monit/conf.d/"$PROJECT_NAME" > /dev/null` ; then
-    # different
-    echo "monit config files different. start updating config";
-    update_monit_config
-  else
-    echo "restoring monit local config file";
-    git checkout monit.conf
-  fi
-else
-  # file not exist
-  echo "monit config file is not exist. start updating config";
-  update_monit_config
-fi
-
-MONITSTATUS=$(sudo /usr/bin/monit status | grep -C 1 "$PROJECT_NAME" | grep status | awk '{print $2}')
-
-if [ ! "$MONITSTATUS" = "Running" ] && [ ! "$MONITSTATUS" = "Initializing" ] ; then
-  echo "monit for this app is not running. start monitoring";
-  sudo /usr/bin/monit start "$PROJECT_NAME"
 fi
 
 echo "updating nginx config";
