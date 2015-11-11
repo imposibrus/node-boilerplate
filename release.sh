@@ -23,10 +23,14 @@ function update_supervisor_config {
   git checkout supervisor.conf
 }
 
+echo "Enter NEWRELIC_LICENSE key:"
+read NEWRELIC_LICENSE
+
 echo "replacing template variables in config files";
 sed -i "s:{{CWD}}:$CWD:g" nginx.conf
 sed -i "s:{{USER}}:$USER:g" supervisor.conf
 sed -i "s:{{CWD}}:$CWD:g" supervisor.conf
+sed -i "s:NEWRELIC_LICENSE=:NEWRELIC_LICENSE=$NEWRELIC_LICENSE:g" supervisor.conf
 
 if [ -f "/etc/supervisor/conf.d/$PROJECT_NAME.conf" ]; then
   # file exist
@@ -36,8 +40,8 @@ if [ -f "/etc/supervisor/conf.d/$PROJECT_NAME.conf" ]; then
     echo "supervisor config file identical. start reloading";
     PID="$(sudo supervisorctl status | sed -n "/$PROJECT_NAME/s/.*pid \([[:digit:]]\+\).*/\1/p")"
     if ! [ -z "$PID" ]; then
-      echo "app already running. send kill -HUP";
-      kill -HUP "$PID"
+      echo "app already running. reload it";
+      naught deploy --timeout 10
     else
       echo "app not running. start it";
       sudo supervisorctl start "$PROJECT_NAME"
@@ -66,5 +70,5 @@ echo "start reloading nginx config";
 sudo /etc/init.d/nginx reload
 
 echo "restoring nginx local config file";
+cd $CWD
 git checkout nginx.conf
-
