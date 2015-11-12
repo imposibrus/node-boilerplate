@@ -17,3 +17,5 @@ public/js/*.map
 public/coverage
 
 /logs/
+
+/dst/

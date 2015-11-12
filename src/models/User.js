@@ -1,9 +1,10 @@
 
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema,
-    _ = require('lodash');
+import mongoose from 'mongoose';
+import _ from 'lodash';
 
-var usersSchema = new Schema({
+const Schema = mongoose.Schema;
+
+const usersSchema = new Schema({
   name: {type: String, required: true},
   surname: {type: String},
   phone: {type: String},
@@ -17,7 +18,7 @@ var usersSchema = new Schema({
 });
 
 usersSchema.options.toJSON = {
-  transform: function(doc, ret) {
+  transform: (doc, ret) => {
     ret = _.pick(doc, ['id', 'name', 'surname', 'phone', 'email', 'site', 'district', 'about', 'photo', 'fullName'/*, 'social'*/]);
     return ret;
   }
@@ -47,6 +48,7 @@ usersSchema.statics.textSearch = function(text, options, cb) {
     cb = options;
     options = null;
   }
+  // TODO: default params?
   options = _.extend({
     fields: ['name', 'surname'],
     limit: 20
@@ -54,24 +56,24 @@ usersSchema.statics.textSearch = function(text, options, cb) {
 
   var preparedRegExp = text.replace(/\(|\)|-|\\|\^|\$|\*|\+|\?|\{|\}|\.|\[|\]|\|/g, '\\$&'),
       query = {
-        $or: options.fields.map(function(field) {
+        $or: options.fields.map((field) => {
           var tmp = {};
           tmp[field] = new RegExp(preparedRegExp, 'i');
           return tmp;
         })
       };
 
-  this.find(query).limit(options.limit).exec(function(err, foundUsers) {
+  this.find(query).limit(options.limit).exec((err, foundUsers) => {
     if(err) {
       return cb(err);
     }
 
     if(options.exclude_id) {
-      foundUsers = foundUsers.filter(function(user) {return user.id != options.exclude_id});
+      foundUsers = foundUsers.filter((user) => user.id != options.exclude_id);
     }
     cb(null, foundUsers);
   });
 };
 
 
-module.exports = mongoose.model('User', usersSchema);
+export default mongoose.model('User', usersSchema);

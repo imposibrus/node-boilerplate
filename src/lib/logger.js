@@ -1,5 +1,5 @@
 
-var intel = require('intel');
+import intel from 'intel';
 
 intel.basicConfig({
   //file: '/path/to/file.log', // file and stream are exclusive. only pass 1
@@ -7,4 +7,4 @@ intel.basicConfig({
   level: intel.INFO
 });
 
-module.exports = intel;
+export default intel;

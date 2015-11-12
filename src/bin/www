@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 
-var newrelic = require('newrelic');
+import newrelic from 'newrelic';
 
 /**
  * Module dependencies.
  */
 
-var app = require('../app'),
-    debug = require('debug')('node-boilerplate:server'),
-    http = require('http'),
-    config = require('../lib/config');
+import app from '../app';
+import debug from 'debug';
+import http from 'http';
+import config from '../lib/config';
+
+const debugLog = debug('node-boilerplate:server');
 
 process.title = config.get('title');
 
@@ -17,7 +19,7 @@ process.title = config.get('title');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(config.get('PORT'));
+const port = normalizePort(config.get('PORT'));
 app.set('port', port);
 
 app.locals.newrelic = newrelic;
@@ -26,7 +28,7 @@ app.locals.newrelic = newrelic;
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -36,9 +38,9 @@ module.exports = server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-process.on('message', function(message) {
+process.on('message', (message) => {
   if(message == 'shutdown') {
-    server.close(function() {});
+    server.close(() => {});
     process.exit(0);
   }
 });
@@ -100,6 +102,6 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  debugLog('Listening on ' + bind);
   if (process.send) process.send('online');
 }
