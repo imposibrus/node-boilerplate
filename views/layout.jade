@@ -12,10 +12,7 @@ html(lang="ru").no-js
     link(href="/public/favicon.ico", rel="shortcut icon")
     link(rel="apple-touch-icon-precomposed", href="/public/apple-touch-icon-precomposed.png")
 
-    if env == 'production'
-      link(rel='stylesheet', href='/public/css/build.min.css?v=' + config.get('version'))
-    else
-      link(rel='stylesheet', href='/public/css/main.css?v=' + config.get('version'))
+    include blocks/_styles
 
     link(rel="author", href="/humans.txt")
 
@@ -26,16 +23,7 @@ html(lang="ru").no-js
         block content
       footer#footer
 
-    script(src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js")
-    script.
-      window.jQuery || document.write('<script src="/public/bower_components/jquery/dist/jquery.min.js"><\/script>');
-
-    if env == 'production'
-      script(src="/public/js/build.min.js?v=" + config.get('version'))
-    else
-      script(src="/public/bower_components/noty/js/noty/packaged/jquery.noty.packaged.js")
-      script(src="/public/js/plugins.js")
-      script(src="/public/js/main.js?v=" + config.get('version'))
+    include blocks/_scripts
 
     script.
       //IE outdate friendly warning if you don't want remove it

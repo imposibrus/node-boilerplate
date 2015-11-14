@@ -1,4 +1,6 @@
 
+var noty = require('exports?noty!../bower_components/noty/js/noty/packaged/jquery.noty.packaged.js');
+
 var notySuccess = function(text) {
       noty({
         type: 'success',

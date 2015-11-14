@@ -1,15 +1,32 @@
 
-var gulp = require('gulp'),
-    stylus = require('gulp-stylus'),
+var fs = require('fs'),
+    path = require('path'),
+    gulp = require('gulp'),
     browserSync = require('browser-sync').create(),
-    cssMin = require('gulp-minify-css'),
-    uglify = require('gulp-uglify'),
-    concat = require('gulp-concat'),
-    sourcemaps = require('gulp-sourcemaps'),
     rename = require("gulp-rename"),
-    babel = require('gulp-babel');
+    babel = require('gulp-babel'),
+    gulpWebpack = require('gulp-webpack'),
+    webpackConfig = require('./webpack.config');
 
-gulp.task('babel', ['babel:server', 'babel:bin']);
+gulp.task('webpack', function() {
+  return gulp.src('public/js/main.js')
+      .pipe(gulpWebpack(webpackConfig))
+      .pipe(gulp.dest('public/build'));
+});
+
+gulp.task('genBlocks', ['webpack'], function() {
+  var manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'public', 'build', 'webpack-assets.json'))),
+      scriptsJade = [
+        'script(src="/public/build/'+ manifest['commons.chunk']['js'] +'")',
+        'script(src="/public/build/'+ manifest['main']['js'] +'")'
+      ].join('\n'),
+      stylesJade = [
+        'link(rel="stylesheet", href="/public/build/'+ manifest['main']['css'] +'")'
+      ].join('\n');
+
+  fs.writeFileSync(path.join(__dirname, 'views', 'blocks', '_styles.jade'), stylesJade);
+  fs.writeFileSync(path.join(__dirname, 'views', 'blocks', '_scripts.jade'), scriptsJade);
+});
 
 gulp.task('babel:server', function() {
   return gulp.src(['src/**/*.js'])
@@ -26,39 +43,6 @@ gulp.task('babel:bin', function() {
       .on('error', console.error);
 });
 
-gulp.task('stylus', function () {
-  return gulp.src(['public/css/main.styl'])
-      .pipe(sourcemaps.init())
-      .pipe(stylus())
-      .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest('public/css'))
-      .pipe(browserSync.stream());
-});
-
-gulp.task('cssmin', function() {
-  return gulp.src([
-    'public/css/main.css'
-  ])
-      .pipe(sourcemaps.init())
-      .pipe(cssMin())
-      .pipe(concat('build.min.css'))
-      .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest('public/css'));
-});
-
-gulp.task('uglify', function() {
-  return gulp.src([
-    'public/bower_components/noty/js/noty/packaged/jquery.noty.packaged.min.js',
-    'public/js/plugins.js',
-    'public/js/main.js'
-  ])
-      .pipe(sourcemaps.init())
-      .pipe(uglify())
-      .pipe(concat('build.min.js'))
-      .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest('public/js'));
-});
-
 gulp.task('watch', function(cb) {
   browserSync.init({
     notify: false,
@@ -71,12 +55,15 @@ gulp.task('watch', function(cb) {
     browserSync.exit();
   });
 
-  gulp.watch('public/css/*.styl', ['stylus']);
+  gulp.watch('public/css/*.styl', ['webpack']);
   gulp.watch('src/**/*.js', ['babel:server']);
   gulp.watch('src/bin/www', ['babel:bin']);
   gulp.watch('views/**/*.jade').on('change', browserSync.reload);
-  gulp.watch('public/js/**/*.js').on('change', browserSync.reload);
+  gulp.watch('public/js/**/*.js', ['webpack']);
+  gulp.watch('public/build/**/*.js').on('change', browserSync.reload);
+  gulp.watch('public/build/**/*.css').on('change', browserSync.reload);
 });
 
-gulp.task('default', ['stylus', 'babel', 'watch']);
-gulp.task('deploy', ['stylus', 'cssmin', 'uglify', 'babel']);
+gulp.task('babel', ['babel:server', 'babel:bin']);
+gulp.task('default', ['webpack', 'genBlocks', 'babel', 'watch']);
+gulp.task('deploy', ['webpack', 'genBlocks', 'babel']);
