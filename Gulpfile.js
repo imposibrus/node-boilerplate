@@ -5,7 +5,7 @@ var fs = require('fs'),
     browserSync = require('browser-sync').create(),
     rename = require("gulp-rename"),
     babel = require('gulp-babel'),
-    gulpWebpack = require('gulp-webpack'),
+    webpackStream = require('webpack-stream'),
     webpackConfig = require('./webpack.config'),
     template = require('gulp-template'),
     pluralize = require('pluralize');
@@ -70,7 +70,7 @@ var getArgsForCommand = function(command) {
 
 gulp.task('webpack', function() {
   return gulp.src('public/js/main.js')
-      .pipe(gulpWebpack(webpackConfig))
+      .pipe(webpackStream(webpackConfig))
       .pipe(gulp.dest('public/build'));
 });
 
