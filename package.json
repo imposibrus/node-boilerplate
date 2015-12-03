@@ -5,8 +5,8 @@
   "scripts": {
     "prestart": "gulp deploy",
     "start": "node ./dst/bin/www",
-    "test": "NEW_RELIC_ENABLED=false NODE_ENV=testing mocha",
-    "coverage": "NEW_RELIC_ENABLED=false babel-node node_modules/.bin/babel-istanbul cover node_modules/mocha/bin/_mocha -- --reporter dot"
+    "test": "PORT=0 NEW_RELIC_ENABLED=false NODE_ENV=testing mocha",
+    "coverage": "PORT=0 NEW_RELIC_ENABLED=false babel-node node_modules/.bin/babel-istanbul cover node_modules/mocha/bin/_mocha -- --reporter dot"
   },
   "dependencies": {
     "body-parser": "^1.14.1",

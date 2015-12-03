@@ -1,8 +1,8 @@
 
 import formidable from 'formidable';
 
-/* istanbul ignore next */
 export default function(req, res, next) {
+  /* istanbul ignore next */
   if(/multipart\/form-data/.test(req.get('content-type'))) {
     var form = new formidable.IncomingForm();
     form.hash = 'md5';

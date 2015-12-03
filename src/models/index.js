@@ -1,19 +1,19 @@
 
 import mongoose from 'mongoose';
 import config from '../lib/config';
-import debug from '../lib/debug';
+import _logger from '../lib/logger';
 
 const connection = mongoose.connection,
-    debugLog = debug('node-boilerplate:db');
+    logger = _logger.getLogger('models');
 
 connection.on('error', () => {
   mongoose.disconnect();
 });
 connection.on('connected', () => {
-  debugLog('MongoDB connected');
+  logger.debug('MongoDB connected');
 });
 connection.on('disconnected', () => {
-  debugLog('MongoDB disconnected!');
+  logger.debug('MongoDB disconnected!');
 });
 mongoose.connect(config.get('mongoose:url'), {server: {auto_reconnect: true}});
 
