@@ -15,7 +15,12 @@ public/js/build.min.js
 public/js/*.map
 
 public/coverage
+/public/build
+
+/views/blocks
 
 /logs/
+
+/dst/
 
 npm-debug.log

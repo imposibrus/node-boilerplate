@@ -17,10 +17,10 @@ Object.defineProperty(global, '__line', {
   }
 });
 
-var path = require('path'),
-    util = require('util');
+import path from 'path';
+import util from 'util';
 
-module.exports = function(namespace) {
+export default function(namespace) {
   var debug = require('debug')(namespace);
 
   if(!debug.enabled) {

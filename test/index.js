@@ -1,5 +1,5 @@
 
-var server = require('../bin/www'),
+var server = require('../src/bin/www'),
     request = require('supertest');
 
 
