@@ -28,6 +28,7 @@
   "devDependencies": {
     "assets-webpack-plugin": "3.2.0",
     "babel-istanbul": "github:imposibrus/babel-istanbul",
+    "babel-loader": "6.2.0",
     "babel-preset-es2015": "6.1.18",
     "babel-preset-stage-0": "6.1.18",
     "browser-sync": "^2.10.0",
@@ -38,6 +39,7 @@
     "gulp": "^3.9.0",
     "gulp-babel": "6.1.1",
     "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "1.6.0",
     "gulp-template": "3.1.0",
     "mocha": "2.3.4",
     "pluralize": "1.2.1",

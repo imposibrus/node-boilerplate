@@ -5,8 +5,19 @@ require('./plugins');
 
 require('main.styl');
 
-$(function() {
+class App {
+  constructor() {
 
-  console.log("loaded");
+  }
 
+  log() {
+    console.log('loaded');
+  }
+}
+
+$(() => {
+
+  var app = new App();
+
+  app.log();
 });

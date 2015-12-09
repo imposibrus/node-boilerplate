@@ -40,6 +40,11 @@ module.exports = {
   module: {
     loaders: [
       {
+        test: /\.jsx?$/,
+        exclude: /(node_modules|bower_components)/,
+        loader: 'babel?cacheDirectory'
+      },
+      {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader', {publicPath: '../'})
       },

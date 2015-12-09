@@ -8,7 +8,8 @@ var fs = require('fs'),
     webpackStream = require('webpack-stream'),
     webpackConfig = require('./webpack.config'),
     template = require('gulp-template'),
-    pluralize = require('pluralize');
+    pluralize = require('pluralize'),
+    sourceMaps = require('gulp-sourcemaps');
 
 gulp.task('generate:model', function() {
   var name = getArgsForCommand('--name')[0],
@@ -71,6 +72,8 @@ var getArgsForCommand = function(command) {
 gulp.task('webpack', function() {
   return gulp.src('public/js/main.js')
       .pipe(webpackStream(webpackConfig))
+      .pipe(sourceMaps.init())
+      .pipe(sourceMaps.write('.'))
       .pipe(gulp.dest('public/build'));
 });
 
