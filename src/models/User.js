@@ -1,79 +1,38 @@
 
-import mongoose from 'mongoose';
-import _ from 'lodash';
+import Sequelize from 'sequelize';
 
-const Schema = mongoose.Schema;
+export default function(sequelize) {
+  return sequelize.define('User', {
+    firstName: {
+      type: Sequelize.STRING
+    },
+    lastName: {
+      type: Sequelize.STRING
+    },
+    phone: {
+      type: Sequelize.STRING
+    },
+    email: {
+      type: Sequelize.STRING,
+      validate: {
+        isEmail: true
+      }
+    },
+    meta: Sequelize.JSONB
+  }, {
+    paranoid: true,
+    getterMethods: {
+      fullName: function() {
+        return this.firstName + ' ' + this.lastName
+      }
+    },
+    setterMethods: {
+      fullName: function(value) {
+        var names = value.split(' ');
 
-const usersSchema = new Schema({
-  name: {type: String, required: true},
-  surname: {type: String},
-  phone: {type: String},
-  email: {type: String, required: true},
-  photo: {
-    original: String,
-    preview: String
-  },
-  createdAt: {type: Date, default: Date.now},
-  updatedAt: {type: Date, default: Date.now}
-});
-
-usersSchema.options.toJSON = {
-  transform: (doc, ret) => {
-    ret = _.pick(doc, ['id', 'name', 'surname', 'phone', 'email', 'site', 'district', 'about', 'photo', 'fullName'/*, 'social'*/]);
-    return ret;
-  }
-};
-
-usersSchema.pre('save', function(done) {
-  this.updatedAt = new Date();
-  done();
-});
-
-usersSchema.virtual('fullName').get(function() {
-  return _.compact([this.name, this.surname]).join(' ');
-}).set(function(fullName) {
-  var names = fullName.split(' ');
-  this.name = names[0];
-  this.surname = names[1];
-});
-
-/**
- * textSearch
- * @param {String} text
- * @param {Object} [options]
- * @param {Function} cb
- */
-usersSchema.statics.textSearch = function(text, options, cb) {
-  if(!cb && typeof options === 'function') {
-    cb = options;
-    options = null;
-  }
-  // TODO: default params?
-  options = _.extend({
-    fields: ['name', 'surname'],
-    limit: 20
-  }, options);
-
-  var preparedRegExp = text.replace(/\(|\)|-|\\|\^|\$|\*|\+|\?|\{|\}|\.|\[|\]|\|/g, '\\$&'),
-      query = {
-        $or: options.fields.map((field) => {
-          var tmp = {};
-          tmp[field] = new RegExp(preparedRegExp, 'i');
-          return tmp;
-        })
-      };
-
-  this.find(query).limit(options.limit).exec((err, foundUsers) => {
-    if(err) {
-      return cb(err);
+        this.setDataValue('firstName', names.slice(0, -1).join(' '));
+        this.setDataValue('lastName', names.slice(-1).join(' '));
+      }
     }
-
-    if(options.exclude_id) {
-      foundUsers = foundUsers.filter((user) => user.id != options.exclude_id);
-    }
-    cb(null, foundUsers);
   });
 };
-
-
-export default mongoose.model('User', usersSchema);

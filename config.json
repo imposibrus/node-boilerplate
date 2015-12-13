@@ -2,8 +2,15 @@
   "PORT": 3360,
   "title": "node:node-boilerplate",
   "sessionSecret": "node-boilerplate",
-  "mongoose": {
-    "url": "mongodb://localhost/node-boilerplate"
+  "sequelize": {
+    "database": "node-boilerplate",
+    "username": "node-boilerplate",
+    "password": "node-boilerplate",
+    "options": {
+      "host": "localhost",
+      "dialect": "postgres",
+      "logging": false
+    }
   },
   "LOG_LEVEL": "INFO"
 }

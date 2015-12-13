@@ -1,21 +1,16 @@
 
-import mongoose from 'mongoose';
+import Sequelize from 'sequelize';
 import config from '../lib/config';
-import _logger from '../lib/logger';
+import UserModel from './User';
 
-const connection = mongoose.connection,
-    logger = _logger.getLogger('models');
+const sequelize = new Sequelize(
+    config.get('sequelize:database'),
+    config.get('sequelize:username'),
+    config.get('sequelize:password'),
+    config.get('sequelize:options')
+);
 
-connection.on('error', () => {
-  mongoose.disconnect();
-});
-connection.on('connected', () => {
-  logger.debug('MongoDB connected');
-});
-connection.on('disconnected', () => {
-  logger.debug('MongoDB disconnected!');
-});
-mongoose.connect(config.get('mongoose:url'), {server: {auto_reconnect: true}});
+var User = UserModel(sequelize);
 
-export {mongoose as mongoose};
-export {default as User} from './User';
+export {sequelize as sequelize};
+export {User as User};
