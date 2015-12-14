@@ -1,16 +1,21 @@
 
 import Sequelize from 'sequelize';
 import config from '../lib/config';
-import UserModel from './User';
 
-const sequelize = new Sequelize(
-    config.get('sequelize:database'),
-    config.get('sequelize:username'),
-    config.get('sequelize:password'),
-    config.get('sequelize:options')
-);
+var sequelizeConf = config.get('sequelize');
 
-var User = UserModel(sequelize);
+if(process.env.NODE_ENV == 'development') {
+  sequelizeConf.options.logging = console.error;
+}
+
+const sequelize = new Sequelize(...Object.keys(sequelizeConf).map((key) => sequelizeConf[key]));
+
+sequelize.sync().catch((err) => {
+  console.error(err);
+  process.exit(-1);
+});
+
+var User = sequelize.import('./User');
 
 export {sequelize as sequelize};
 export {User as User};

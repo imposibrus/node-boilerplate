@@ -1,24 +1,22 @@
 
-import Sequelize from 'sequelize';
-
-export default function(sequelize) {
+module.exports = function(sequelize, DataTypes) {
   return sequelize.define('User', {
     firstName: {
-      type: Sequelize.STRING
+      type: DataTypes.STRING
     },
     lastName: {
-      type: Sequelize.STRING
+      type: DataTypes.STRING
     },
     phone: {
-      type: Sequelize.STRING
+      type: DataTypes.STRING
     },
     email: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
       validate: {
         isEmail: true
       }
     },
-    meta: Sequelize.JSONB
+    meta: DataTypes.JSONB
   }, {
     paranoid: true,
     getterMethods: {
