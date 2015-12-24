@@ -1,10 +1,10 @@
 
-var server = require('../src/bin/www'),
-    request = require('supertest');
+import server from '../../src/bin/www';
+import request from 'supertest';
 
 
-describe('GET /', function() {
-  it('should respond with main page', function(done) {
+describe('GET /', () => {
+  it('should respond with main page', (done) => {
     request(server)
         .get('/')
         .expect('Content-Type', /text\/html/)
@@ -13,8 +13,8 @@ describe('GET /', function() {
   });
 });
 
-describe('GET /404', function() {
-  it('should respond with 404 error page', function(done) {
+describe('GET /404', () => {
+  it('should respond with 404 error page', (done) => {
     request(server)
         .get('/404')
         .expect('Content-Type', /text\/html/)
