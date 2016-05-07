@@ -9,6 +9,7 @@
     "coverage": "PORT=0 NEW_RELIC_ENABLED=false babel-node node_modules/.bin/babel-istanbul cover node_modules/mocha/bin/_mocha -- --reporter dot"
   },
   "dependencies": {
+    "bluebird": "3.3.5",
     "body-parser": "^1.14.1",
     "connect-redis": "3.0.2",
     "cookie-parser": "^1.4.0",
@@ -41,9 +42,8 @@
     "extract-text-webpack-plugin": "^0.9.1",
     "file-loader": "0.8.5",
     "gulp": "^3.9.0",
-    "gulp-babel": "6.1.1",
+    "gulp-load-plugins": "1.2.2",
     "gulp-rename": "^1.2.2",
-    "gulp-sourcemaps": "1.6.0",
     "gulp-template": "3.1.0",
     "gulp-typescript": "2.13.0",
     "mocha": "2.3.4",
