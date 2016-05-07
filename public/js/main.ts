@@ -1,6 +1,7 @@
 
 import $ = require('jquery');
 import {notySuccess} from './plugins';
+const newModule = require('./newModule.js');
 
 require('main.styl');
 
@@ -21,4 +22,6 @@ $(() => {
   app.log();
 
   notySuccess('success text');
+
+  newModule();
 });
