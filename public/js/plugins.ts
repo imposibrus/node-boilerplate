@@ -1,7 +1,7 @@
 
-var noty = require('exports?noty!../bower_components/noty/js/noty/packaged/jquery.noty.packaged.js');
+import * as noty from 'noty';
 
-var notySuccess = function(text) {
+let notySuccess = function(text) {
       noty({
         type: 'success',
         text: text || 'Success!'
@@ -14,7 +14,7 @@ var notySuccess = function(text) {
       });
     },
     notyAlert = function(text) {
-      if(!text) {
+      if (!text) {
         return false;
       }
       noty({
@@ -22,3 +22,5 @@ var notySuccess = function(text) {
         text: text
       });
     };
+
+export {notySuccess, notyError, notyAlert};

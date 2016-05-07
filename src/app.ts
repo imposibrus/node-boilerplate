@@ -1,17 +1,17 @@
-import express from 'express';
-import path from 'path';
-import favicon from 'serve-favicon';
-import logger from 'morgan';
-import config from './lib/config';
-import session from 'express-session';
+import * as express from 'express';
+import * as path from 'path';
+import * as favicon from 'serve-favicon';
+import * as logger from 'morgan';
+import * as session from 'express-session';
+import * as cookieParser from 'cookie-parser';
+import * as bodyParser from 'body-parser';
+import * as _ from 'lodash';
+
 import sessionStore from './lib/sessionStore';
-import cookieParser from 'cookie-parser';
-import bodyParser from 'body-parser';
-
-import _ from 'lodash';
-
+import config from './lib/config';
 import routes from './routes';
 import postNormalize from './lib/postNormalize';
+import RequestError from './lib/RequestError';
 
 const app = express();
 
@@ -23,9 +23,9 @@ app.set('view engine', 'jade');
 app.use(favicon(path.join(__dirname, '../public/favicon.ico')));
 
 /* istanbul ignore next */
-if(app.get('env') === 'development') {
+if (app.get('env') === 'development') {
   app.use(logger('dev'));
-  //app.locals.pretty = true;
+  // app.locals.pretty = true;
 }
 
 app.use(bodyParser.json());
@@ -54,8 +54,8 @@ app.locals.env = app.get('env');
 app.use('/', routes);
 
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
-  var err = new Error('Not Found');
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+  let err = new RequestError('Not Found');
   err.status = 404;
   next(err);
 });
@@ -66,7 +66,7 @@ app.use((req, res, next) => {
 // will print stacktrace
 /* istanbul ignore next */
 if (app.get('env') === 'development') {
-  app.use((err, req, res, next) => {
+  app.use((err: RequestError, req: express.Request, res: express.Response, next: express.NextFunction) => {
     res.status(err.status || 500);
     if(req.xhr) {
       return res.send({status: err.status || 500, message: err.message, error: err});
@@ -81,7 +81,7 @@ if (app.get('env') === 'development') {
 // production error handler
 // no stacktraces leaked to user
 /* istanbul ignore next */
-app.use((err, req, res, next) => {
+app.use((err: RequestError, req: express.Request, res: express.Response, next: express.NextFunction) => {
   res.status(err.status || 500);
   if(req.xhr) {
     return res.send({status: err.status || 500, message: err.message, error: {}});

@@ -31,7 +31,7 @@ if(!isDev) {
 
 module.exports = {
   entry: {
-    main: './public/js/main.js'
+    main: './public/js/main.ts'
   },
   output: {
     path: path.join(__dirname, 'public/build'),
@@ -43,6 +43,10 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /(node_modules|bower_components)/,
         loader: 'babel?cacheDirectory'
+      },
+      {
+        test: /\.ts$/,
+        loader: 'awesome-typescript-loader'
       },
       {
         test: /\.css$/,
@@ -68,7 +72,8 @@ module.exports = {
     modulesDirectories: ['node_modules', 'bower_components'],
     alias: {
       'main.styl': __dirname + '/public/css/main.styl'
-    }
+    },
+    extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']
   },
   devtool: '#source-map',
   bail: true,

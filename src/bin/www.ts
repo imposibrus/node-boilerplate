@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
-import newrelic from 'newrelic';
+import * as newrelic from 'newrelic';
 
 /**
  * Module dependencies.
  */
 
 import app from '../app';
-import debug from 'debug';
-import http from 'http';
+import * as debug from 'debug';
+import * as http from 'http';
 import config from '../lib/config';
 
 const debugLog = debug('node-boilerplate:server');
@@ -39,7 +39,7 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 process.on('message', (message) => {
-  if(message == 'shutdown') {
+  if (message === 'shutdown') {
     server.close(() => {});
     process.exit(0);
   }
@@ -50,7 +50,7 @@ process.on('message', (message) => {
  */
 
 function normalizePort(val) {
-  var port = parseInt(val, 10);
+  let port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -74,7 +74,7 @@ function onError(error) {
     throw error;
   }
 
-  var bind = typeof port === 'string'
+  let bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
 
@@ -98,8 +98,8 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
+  let addr = server.address();
+  let bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debugLog('Listening on ' + bind);

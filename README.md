@@ -25,7 +25,7 @@
 gulp generate:model --name post --force
 ```
 This command creates new file `Post.js` in `src/models` folder and 
-append `export {default as Post} from './Post';` line to `src/models/index.js` file.
+append `export {default as Post} from './Post';` line to `src/models/index.ts` file.
 
 ### Routes:
 ```

@@ -24,3 +24,5 @@ public/coverage
 /dst/
 
 npm-debug.log
+
+/typings

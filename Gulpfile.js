@@ -9,7 +9,9 @@ var fs = require('fs'),
     webpackConfig = require('./webpack.config'),
     template = require('gulp-template'),
     pluralize = require('pluralize'),
-    sourceMaps = require('gulp-sourcemaps');
+    sourceMaps = require('gulp-sourcemaps'),
+    ts = require('gulp-typescript'),
+    tsConfig = require('./tsconfig.json');
 
 gulp.task('generate:model', function() {
   var name = getArgsForCommand('--name')[0],
@@ -28,7 +30,7 @@ gulp.task('generate:model', function() {
       .pipe(rename(modelName + '.js'))
       .pipe(gulp.dest('src/models'))
       .on('end', function() {
-        var modelsIndexPath = path.join(__dirname, 'src/models/index.js'),
+        var modelsIndexPath = path.join(__dirname, 'src/models/index.ts'),
             modelsIndexContent = fs.readFileSync(modelsIndexPath).toString();
 
         if(modelsIndexContent.indexOf(exportTemplate) == -1) {
@@ -53,7 +55,7 @@ gulp.task('generate:router', function() {
       .pipe(rename(name + '.js'))
       .pipe(gulp.dest('src/routes'))
       .on('end', function() {
-        var routesIndexPath = path.join(__dirname, 'src/routes/index.js'),
+        var routesIndexPath = path.join(__dirname, 'src/routes/index.ts'),
             routesIndexContent = fs.readFileSync(routesIndexPath).toString();
 
         if(routesIndexContent.indexOf(importTemplate) == -1) {
@@ -70,10 +72,10 @@ var getArgsForCommand = function(command) {
 };
 
 gulp.task('webpack', function() {
-  return gulp.src('public/js/main.js')
+  return gulp.src('public/js/main.ts')
       .pipe(webpackStream(webpackConfig))
-      .pipe(sourceMaps.init())
-      .pipe(sourceMaps.write('.'))
+      // .pipe(sourceMaps.init())
+      // .pipe(sourceMaps.write('.'))
       .pipe(gulp.dest('public/build'));
 });
 
@@ -92,16 +94,13 @@ gulp.task('genBlocks', ['webpack'], function() {
 });
 
 gulp.task('babel:server', function() {
-  return gulp.src(['src/**/*.js'])
-      .pipe(babel())
-      .pipe(gulp.dest('dst'))
-      .on('error', console.error);
-});
-
-gulp.task('babel:bin', function() {
-  return gulp.src(['src/bin/www'])
-      .pipe(babel())
-      .pipe(rename('bin/www'))
+  return gulp.src(['src/**/*.ts', 'definitions/**.ts'])
+      .pipe(ts(tsConfig.compilerOptions))
+      .pipe(rename(function(path) {
+        if(path.basename + path.extname == 'www.js') {
+          path.extname = '';
+        }
+      }))
       .pipe(gulp.dest('dst'))
       .on('error', console.error);
 });
@@ -119,14 +118,13 @@ gulp.task('watch', function(cb) {
   });
 
   gulp.watch('public/css/*.styl', ['webpack']);
-  gulp.watch('src/**/*.js', ['babel:server']);
-  gulp.watch('src/bin/www', ['babel:bin']);
+  gulp.watch('src/**/*.ts', ['babel:server']);
   gulp.watch('views/**/*.jade').on('change', browserSync.reload);
-  gulp.watch('public/js/**/*.js', ['webpack']);
+  gulp.watch('public/js/**/*.ts', ['webpack']);
   gulp.watch('public/build/**/*.js').on('change', browserSync.reload);
   gulp.watch('public/build/**/*.css').on('change', browserSync.reload);
 });
 
-gulp.task('babel', ['babel:server', 'babel:bin']);
+gulp.task('babel', ['babel:server']);
 gulp.task('default', ['webpack', 'genBlocks', 'babel', 'watch']);
 gulp.task('deploy', ['webpack', 'genBlocks', 'babel']);
