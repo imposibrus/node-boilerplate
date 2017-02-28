@@ -2,7 +2,7 @@
 import Sequelize from 'sequelize';
 import config from '../lib/config';
 
-var sequelizeConf = config.get('sequelize');
+let sequelizeConf = config.get('sequelize');
 
 if(process.env.NODE_ENV == 'development') {
   sequelizeConf.options.logging = console.error;
@@ -15,7 +15,6 @@ sequelize.sync().catch((err) => {
   process.exit(-1);
 });
 
-var User = sequelize.import('./User');
+const User = sequelize.import('./User');
 
-export {sequelize as sequelize};
-export {User as User};
+export {sequelize, User};
