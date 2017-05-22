@@ -25,19 +25,3 @@ html(lang="ru").no-js
 
     include blocks/_scripts
 
-    script.
-      //IE outdate friendly warning if you don't want remove it
-      var $buoop = {vs: {i: 8, f: 3.6, o: 10.6, s: 3.2, n: 9}};
-      $buoop.ol = window.onload;
-      window.onload = function () {
-        try {
-          if($buoop.ol) $buoop.ol();
-        } catch (e) {
-        }
-        var e = document.createElement("script");
-        e.setAttribute("type", "text/javascript");
-        e.setAttribute("src", "/public/js/update.js");
-        e.async = true;
-        document.body.appendChild(e);
-      };
-

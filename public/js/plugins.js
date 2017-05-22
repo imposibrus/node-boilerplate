@@ -1,24 +1,29 @@
 
-var noty = require('exports?noty!../bower_components/noty/js/noty/packaged/jquery.noty.packaged.js');
+const Noty = require('noty');
 
-var notySuccess = function(text) {
-      noty({
-        type: 'success',
-        text: text || 'Success!'
-      });
+require('noty.css');
+
+let notySuccess = function(text) {
+        new Noty({
+            type: 'success',
+            text: text || 'Success!'
+        }).show();
     },
     notyError = function(text) {
-      noty({
-        type: 'error',
-        text: text || 'Something went wrong...'
-      });
+        new Noty({
+            type: 'error',
+            text: text || 'Something went wrong...'
+        }).show();
     },
     notyAlert = function(text) {
-      if(!text) {
-        return false;
-      }
-      noty({
-        type: 'alert',
-        text: text
-      });
+        if (!text) {
+            return false;
+        }
+
+        new Noty({
+            type: 'alert',
+            text: text
+        }).show();
     };
+
+module.exports = {notySuccess, notyError, notyAlert};

@@ -1,7 +1,6 @@
 
-var $ = require('jquery');
-
-require('./plugins');
+var $ = require('jquery'),
+    {notySuccess} = require('./plugins');
 
 require('main.styl');
 
@@ -11,7 +10,7 @@ class App {
   }
 
   log() {
-    console.log('loaded');
+      notySuccess('loaded');
   }
 }
 
