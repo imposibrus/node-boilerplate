@@ -5,18 +5,18 @@ var $ = require('jquery'),
 require('main.styl');
 
 class App {
-  constructor() {
+    constructor() {
 
-  }
+    }
 
-  log() {
-      notySuccess('loaded');
-  }
+    log() {
+        notySuccess('loaded');
+    }
 }
 
 $(() => {
 
-  var app = new App();
+    var app = new App();
 
-  app.log();
+    app.log();
 });

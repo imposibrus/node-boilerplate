@@ -1,13 +1,11 @@
 
-import config from './config';
-import session from 'express-session';
-import {sequelize as sequelize} from '../models';
-import connectSessionStore from 'connect-session-sequelize';
+const session = require('express-session'),
+    connectRedis = require('connect-redis'),
+    redisSharedConnection = require('./redisSharedConnection'),
+    RedisStore = connectRedis(session),
+    redisStore = new RedisStore({
+        ttl: 60 * 60 * 24 * 2, // 48 hours
+        client: redisSharedConnection,
+    });
 
-const SequelizeStore = connectSessionStore(session.Store);
-
-/* istanbul ignore next */
-export default new SequelizeStore({
-  db: sequelize,
-  expiration: 1000 * 60 * 60 * 24 * 2 // 48 hours
-});
+module.exports = redisStore;

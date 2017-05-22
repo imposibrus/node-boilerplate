@@ -1,11 +1,10 @@
 
-import intel from 'intel';
-import config from './config';
+const intel = require('intel'),
+    config = require('./config');
 
 intel.basicConfig({
-  //file: '/path/to/file.log', // file and stream are exclusive. only pass 1
-  format: '[%(date)s] %(name)s.%(levelname)s: %(message)s',
-  level: intel[config.get('LOG_LEVEL')]
+    format: '[%(date)s] %(name)s.%(levelname)s: %(message)s',
+    level: intel[config.get('LOG_LEVEL')]
 });
 
-export default intel;
+module.exports = intel;

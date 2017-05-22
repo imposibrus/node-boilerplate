@@ -53,7 +53,7 @@ gulp.task('babel:bin', () => {
       .on('error', console.error);
 });
 
-gulp.task('watch', function(cb) {
+gulp.task('watch', (cb) => {
     let webpackWatcher;
 
     browserSync.init({

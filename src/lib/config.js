@@ -1,6 +1,6 @@
-import nconf from 'nconf';
-import path from 'path';
-import packageJson from '../../package.json';
+const nconf = require('nconf'),
+    path = require('path'),
+    packageJson = require('../../package.json');
 
 nconf.argv()
     .env()
@@ -8,8 +8,4 @@ nconf.argv()
 
 nconf.set('version', packageJson.version);
 
-//if(nconf.get('NODE_ENV') == 'testing') {
-//    nconf.set('mongoose:url', 'mongodb://localhost/crm-brainstore_testing');
-//}
-
-export default nconf;
+module.exports = nconf;
