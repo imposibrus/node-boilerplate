@@ -1,77 +1,132 @@
 
-var path = require('path'),
+const path = require('path'),
     webpack = require('webpack'),
     ExtractTextPlugin = require('extract-text-webpack-plugin'),
     CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin'),
     AssetsPlugin = require('assets-webpack-plugin'),
-    bowerProvider = new webpack.ResolverPlugin([
-      new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main']),
-      new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('.bower.json', ['main'])
-    ], ['normal', 'loader']),
-    isDev = process.argv.indexOf('--production') == -1;
+    buildDir = path.join(__dirname, 'public', 'build'),
+    isDev = process.env.NODE_ENV !== 'production',
+    plugins = [
+        new webpack.DefinePlugin({
+            'NODE_ENV': JSON.stringify('production'),
+        }),
+        new ExtractTextPlugin({
+            filename: isDev ? 'css/[name].css' : 'css/[name].[chunkhash].css',
+            allChunks: true,
+        }),
+        // new webpack.ProvidePlugin({
+        //     $: 'jquery',
+        //     jQuery: 'jquery',
+        //     'window.jQuery': 'jquery'
+        // }),
+        new CommonsChunkPlugin({name: 'commons', minChunks: 2}),
+        new CommonsChunkPlugin({
+            name: 'vendor',
+            minChunks: m => m.context && m.context.includes('node_modules'),
+        }),
+        new CommonsChunkPlugin({
+            name: 'runtime',
+            chunks: ['vendor'],
+            minChunks: Infinity,
+        }),
+        new AssetsPlugin({path: buildDir}),
+        new webpack.LoaderOptionsPlugin({
+            minimize: true,
+            debug: true,
+        }),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoEmitOnErrorsPlugin()
+    ];
 
-var plugins = [
-  new webpack.DefinePlugin({
-    'NODE_ENV': JSON.stringify('production')
-  }),
-  bowerProvider,
-  new ExtractTextPlugin(isDev ? 'css/[name].css' : 'css/[name].[chunkhash].css', {allChunks: true}),
-  new webpack.ProvidePlugin({
-    $: 'jquery',
-    jQuery: 'jquery',
-    'window.jQuery': 'jquery'
-  }),
-  new CommonsChunkPlugin({name: 'commons.chunk', minChunks: 2}),
-  new AssetsPlugin({path: path.join(__dirname, 'public', 'build')})
-];
-
-if(!isDev) {
-  plugins.unshift(new webpack.optimize.UglifyJsPlugin());
+if (!isDev) {
+    plugins.unshift(new webpack.optimize.UglifyJsPlugin({
+        sourceMap: true,
+        compress: {
+            warnings: true,
+        },
+    }));
 }
 
 module.exports = {
-  entry: {
-    main: './public/js/main.ts'
-  },
-  output: {
-    path: path.join(__dirname, 'public/build'),
-    filename: isDev ? '[name].bundle.js' : '[name].[chunkhash].bundle.js'
-  },
-  module: {
-    loaders: [
-      {
-        test: /\.ts$/,
-        loader: 'awesome-typescript-loader'
-      },
-      {
-        test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader', {publicPath: '../'})
-      },
-      {
-        test: /\.jpe?g$|\.gif$|\.png$|\.svg$/,
-        loader: 'url-loader?limit=100000'
-      },
-      {
-        test:  /\.woff2?$|\.ttf$|\.eot$|\.wav$|\.mp3$/,
-        loader: 'file-loader?name=files/[hash].[ext]'
-      },
-      {
-        test: /\.styl$/,
-        loader: ExtractTextPlugin.extract('css?sourceMap!stylus?sourceMap', {publicPath: '../'})
-      }
-    ]
-  },
-  plugins: plugins,
-  resolve: {
-    root: [path.join(__dirname, 'node_modules'), path.join(__dirname, 'public', 'bower_components')],
-    modulesDirectories: ['node_modules', 'bower_components'],
-    alias: {
-      'main.styl': __dirname + '/public/css/main.styl'
+    entry: {
+        main: ['./public/js/main.ts', 'webpack-hot-middleware/client?reload=true'],
     },
-    extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']
-  },
-  devtool: '#source-map',
-  bail: true,
-  debug: true/*,
-  watch: isDev*/
+    output: {
+        path: buildDir,
+        filename: isDev ? '[name].bundle.js' : '[name].[chunkhash].bundle.js',
+        publicPath: '/public/build/',
+    },
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                use: [
+                    {
+                        loader: 'awesome-typescript-loader',
+                        options: {
+                            configFileName: 'public/js/tsconfig.json'
+                        },
+                    },
+                    'webpack-module-hot-accept'
+                ]
+            },
+            {
+                test: /\.css$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: 'css-loader',
+                    publicPath: '../',
+                })
+            },
+            {
+                test: /\.jpe?g$|\.gif$|\.png$|\.svg$/,
+                use: {
+                    loader: 'url-loader',
+                    options: {
+                        limit: 100000
+                    }
+                }
+            },
+            {
+                test:  /\.woff2?$|\.ttf$|\.eot$|\.wav$|\.mp3$/,
+                use: {
+                    loader: 'file-loader',
+                    options: {
+                        name: 'files/[hash].[ext]'
+                    }
+                }
+            },
+            {
+                test: /\.styl$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: [
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                sourceMap: true
+                            }
+                        },
+                        {
+                            loader: 'stylus-loader',
+                            options: {
+                                sourceMap: true
+                            }
+                        }
+                    ],
+                    publicPath: '../'
+                })
+            }
+        ]
+    },
+    plugins: plugins,
+    resolve: {
+        alias: {
+            'main.styl': __dirname + '/public/css/main.styl',
+            'noty.css': __dirname + '/node_modules/noty/lib/noty.css',
+        },
+        extensions: ['.ts', '.js'],
+    },
+    devtool: '#source-map',
+    bail: true,
 };

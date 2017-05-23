@@ -1,21 +1,12 @@
 
 import * as session from 'express-session';
 import * as connectRedis from 'connect-redis';
+import redisSharedConnection from './redisSharedConnection';
 
 const RedisStore = connectRedis(session),
-      redisStore = new RedisStore({
-        ttl: 60 * 60 * 24 * 2 // 48 hours
-      });
-
-let redisReConnectAttempts = 0;
-
-/* istanbul ignore next */
-redisStore.on('disconnect', (err) => {
-  redisReConnectAttempts++;
-  if(redisReConnectAttempts > 5) {
-    throw err;
-  }
-  console.error(err);
-});
+    redisStore = new RedisStore({
+        ttl: 60 * 60 * 24 * 2, // 48 hours
+        client: redisSharedConnection,
+    });
 
 export default redisStore;

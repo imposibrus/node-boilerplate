@@ -1,0 +1,23 @@
+{
+    "development": {
+        "username": "node-boilerplate",
+        "password": "node-boilerplate",
+        "database": "node-boilerplate",
+        "host": "127.0.0.1",
+        "dialect": "postgres"
+    },
+    "test": {
+        "username": "node-boilerplate",
+        "password": "node-boilerplate",
+        "database": "node-boilerplate",
+        "host": "127.0.0.1",
+        "dialect": "postgres"
+    },
+    "production": {
+        "username": "node-boilerplate",
+        "password": "node-boilerplate",
+        "database": "node-boilerplate",
+        "host": "127.0.0.1",
+        "dialect": "postgres"
+    }
+}

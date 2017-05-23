@@ -3,6 +3,7 @@ declare module 'connect-redis' {
     import * as express from 'express';
     import * as session from 'express-session';
     import * as redis from 'redis';
+    import * as IORedis from 'ioredis';
 
     function s(options: (options?: session.SessionOptions) => express.RequestHandler): s.RedisStore;
 
@@ -11,7 +12,7 @@ declare module 'connect-redis' {
             new (options: RedisStoreOptions): session.Store;
         }
         interface RedisStoreOptions {
-            client?: redis.RedisClient;
+            client?: redis.RedisClient | IORedis.Redis;
             host?: string;
             port?: number;
             socket?: string;

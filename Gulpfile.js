@@ -1,68 +1,121 @@
 
-var fs = require('fs'),
+const fs = require('fs'),
     path = require('path'),
+    url = require('url'),
     gulp = require('gulp'),
+    Promise = require('bluebird'),
     browserSync = require('browser-sync').create(),
+    webpackHotMiddleware = require('webpack-hot-middleware'),
+    webpackCompiler = require('webpack')(require('./webpack.config')),
     $ = require('gulp-load-plugins')({
-      pattern: ['gulp-*', 'gulp.*', 'webpack-stream']
+        pattern: ['gulp-*', 'gulp.*'],
     }),
-    webpackConfig = require('./webpack.config'),
-    tsConfig = require('./tsconfig.json');
+    tsProject = $.typescript.createProject('src/tsconfig.json'),
+    buildDir = path.join(__dirname, 'public', 'build'),
+    viewsDir = path.join(__dirname, 'views'),
+    readFileAsync = Promise.promisify(fs.readFile),
+    writeFileAsync = Promise.promisify(fs.writeFile),
+    {GenStylesLinks, GenScriptsLinks} = require('./gulpTemplateLinkGen');
 
-gulp.task('webpack', function() {
-  return gulp.src('public/js/main.ts')
-      .pipe($.webpackStream(webpackConfig))
-      .pipe(gulp.dest('public/build'));
+gulp.task('webpack', (cb) => {
+    webpackCompiler.run(cb);
 });
 
-gulp.task('genBlocks', ['webpack'], function() {
-  var manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'public', 'build', 'webpack-assets.json'))),
-      scriptsJade = [
-        'script(src="/public/build/'+ manifest['commons.chunk']['js'] +'")',
-        'script(src="/public/build/'+ manifest['main']['js'] +'")'
-      ].join('\n'),
-      stylesJade = [
-        'link(rel="stylesheet", href="/public/build/'+ manifest['main']['css'] +'")'
-      ].join('\n');
+gulp.task('genBlocks', (cb) => {
+    readFileAsync(path.join(buildDir, 'webpack-assets.json')).then((data) => {
+        let manifest;
 
-  fs.writeFileSync(path.join(__dirname, 'views', 'blocks', '_styles.jade'), stylesJade);
-  fs.writeFileSync(path.join(__dirname, 'views', 'blocks', '_scripts.jade'), scriptsJade);
-});
-
-gulp.task('babel:server', function() {
-  return gulp.src(['src/**/*.ts', 'definitions/**.ts'])
-      .pipe($.typescript(tsConfig.compilerOptions))
-      .pipe($.rename(function(path) {
-        if(path.basename + path.extname == 'www.js') {
-          path.extname = '';
+        try {
+            manifest = JSON.parse(data.toString());
+        } catch (err) {
+            return cb(err);
         }
-      }))
-      .pipe(gulp.dest('dst'))
-      .on('error', console.error);
+
+        return Promise.join(
+            writeFileAsync(path.join(viewsDir, 'blocks', '_styles.njk'), new GenStylesLinks(manifest, 'main').gen()),
+            writeFileAsync(path.join(viewsDir, 'blocks', '_scripts.njk'), new GenScriptsLinks(manifest, 'main').gen())
+        ).then(() => {
+            cb();
+        });
+    }).catch(cb);
 });
 
-gulp.task('watch', function(cb) {
-  browserSync.init({
-    notify: false,
-    https: false,
-    open: false,
-    proxy: 'node-boilerplate.local'
-  }, cb);
-
-  process.on('exit', function() {
-    browserSync.exit();
-  });
-
-  gulp.watch('public/css/*.styl', ['webpack']);
-  gulp.watch('src/**/*.ts', ['babel:server']);
-  gulp.watch('views/**/*.jade').on('change', browserSync.reload);
-  gulp.watch('public/js/**/*.ts', ['webpack']);
-  gulp.watch('public/build/**/*.js').on('change', browserSync.reload);
-  gulp.watch('public/build/**/*.css').on('change', browserSync.reload);
+gulp.task('compile:server', () => {
+    return gulp.src(['src/**/*.ts', 'definitions/**.ts'])
+        .pipe($.plumber({
+            errorHandler: $.notify.onError((err) => {
+                return {
+                    title: 'compile:server',
+                    message: err.message,
+                };
+            })
+        }))
+        .pipe(tsProject())
+        .pipe($.rename((path) => {
+            if (path.basename + path.extname === 'www.js') {
+                path.extname = '';
+            }
+        }))
+        .pipe(gulp.dest('dst'));
 });
 
-require('./gulp-dev-tasks')(gulp);
+gulp.task('watch', (cb) => {
+    let webpackWatcher;
 
-gulp.task('babel', ['babel:server']);
-gulp.task('default', ['webpack', 'genBlocks', 'babel', 'watch']);
-gulp.task('deploy', ['webpack', 'genBlocks', 'babel']);
+    browserSync.init({
+        notify: false,
+        https: false,
+        open: false,
+        online: false,
+        reloadThrottle: 500,
+        proxy: {
+            target: 'node-boilerplate.local',
+            middleware: [
+                webpackHotMiddleware(webpackCompiler),
+                (req, res, next) => {
+                    const fileName = path.basename(url.parse(req.url).pathname);
+
+                    /hot-update.(js|js\.map|json)$/.test(fileName) && res.on('finish', () => {
+                        setTimeout(() => {
+                            fs.unlink(path.join(buildDir, fileName), (err) => {
+                                if (err) {
+                                    console.error(err);
+                                    // return;
+                                }
+
+                                // console.log('removed', fileName);
+                            });
+                        }, 5000);
+                    });
+                    next();
+                }
+            ],
+        },
+        files: [
+            'views/**/*.njk',
+            'public/build/**/*.css',
+            'dst/**/*.js'
+        ],
+    }, () => {
+        webpackWatcher = webpackCompiler.watch({
+            aggregateTimeout: 300,
+            poll: 1000
+        }, (err, stats) => {
+            // console.log('webpack watch cb', stats.toJson());
+        });
+
+        cb();
+    });
+
+    process.on('exit', () => {
+        webpackWatcher.close();
+        browserSync.exit();
+    });
+
+    gulp.watch('src/**/*.ts', gulp.series('compile:server'));
+    gulp.watch('public/build/webpack-assets.json', gulp.series('genBlocks'));
+});
+
+gulp.task('compile', gulp.series('compile:server'));
+gulp.task('default', gulp.parallel('compile', 'watch'));
+gulp.task('build', gulp.parallel(gulp.series('webpack', 'genBlocks'), 'compile'));

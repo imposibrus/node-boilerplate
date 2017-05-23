@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "strict": true,
+        "allowSyntheticDefaultImports": true,
+        "lib": ["es5", "es2015", "es2015.collection", "dom"]
+    },
+    "exclude": [
+        "../../node_modules"
+    ],
+    "include": [
+        "../../definitions/all.d.ts",
+        "**/*.ts"
+    ]
+}

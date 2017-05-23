@@ -1,5 +1,5 @@
 
-import $ = require('jquery');
+import * as $ from 'jquery';
 import {notySuccess} from './plugins';
 const newModule = require('./newModule.js');
 

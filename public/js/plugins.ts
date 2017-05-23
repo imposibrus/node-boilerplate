@@ -1,26 +1,29 @@
 
-import * as noty from 'noty';
+import * as Noty from 'noty';
+
+require('noty.css');
 
 let notySuccess = function(text) {
-      noty({
+      new Noty({
         type: 'success',
         text: text || 'Success!'
-      });
+      }).show();
     },
     notyError = function(text) {
-      noty({
+      new Noty({
         type: 'error',
         text: text || 'Something went wrong...'
-      });
+      }).show();
     },
     notyAlert = function(text) {
       if (!text) {
         return false;
       }
-      noty({
+
+      new Noty({
         type: 'alert',
         text: text
-      });
+      }).show();
     };
 
 export {notySuccess, notyError, notyAlert};

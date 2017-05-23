@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 
-import * as newrelic from 'newrelic';
-
 /**
  * Module dependencies.
  */
 
+import * as newrelic from 'newrelic';
 import app from '../app';
 import * as debug from 'debug';
 import * as http from 'http';
@@ -20,6 +19,7 @@ process.title = config.get('title');
  */
 
 const port = normalizePort(config.get('PORT'));
+
 app.set('port', port);
 
 app.locals.newrelic = newrelic;
@@ -74,19 +74,19 @@ function onError(error) {
     throw error;
   }
 
-  let bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+  let bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges');
       process.exit(1);
+
       break;
     case 'EADDRINUSE':
       console.error(bind + ' is already in use');
       process.exit(1);
+
       break;
     default:
       throw error;
@@ -98,10 +98,12 @@ function onError(error) {
  */
 
 function onListening() {
-  let addr = server.address();
-  let bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
+  let addr = server.address(),
+      bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+
   debugLog('Listening on ' + bind);
-  if (process.send) process.send('online');
+
+  if (process.send) {
+      process.send('online');
+  }
 }
