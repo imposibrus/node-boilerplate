@@ -1,10 +1,10 @@
 
-const express = require('express'),
+const path = require('path'),
+    express = require('express'),
+    controllers = require('require-all')(path.join(__dirname, '../controllers')),
     router = express.Router();
 
 /* GET home page. */
-router.get('/', (req, res) => {
-    res.render('index', { title: 'Express' });
-});
+router.get('/', controllers.home);
 
 module.exports = router;
