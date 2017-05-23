@@ -4,6 +4,7 @@ const path = require('path'),
     ExtractTextPlugin = require('extract-text-webpack-plugin'),
     CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin'),
     AssetsPlugin = require('assets-webpack-plugin'),
+    autoprefixer = require('autoprefixer-stylus'),
     buildDir = path.join(__dirname, 'public', 'build'),
     isDev = process.env.NODE_ENV !== 'production',
     plugins = [
@@ -110,7 +111,10 @@ module.exports = {
                         {
                             loader: 'stylus-loader',
                             options: {
-                                sourceMap: true
+                                sourceMap: true,
+                                use: [
+                                    autoprefixer()
+                                ],
                             }
                         }
                     ],

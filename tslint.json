@@ -1,3 +1,15 @@
 {
-    "extends": "tslint:recommended"
+    "extends": "tslint:recommended",
+    "rules": {
+        "quotemark": [true, "single", "avoid-escape"],
+        "one-variable-per-declaration": false,
+        "no-shadowed-variable": false,
+        "no-empty": false,
+        "ordered-imports": false,
+        "object-literal-sort-keys": false,
+        "interface-name": false,
+        "no-namespace": false,
+        "no-empty-interface": false,
+        "no-console": false
+    }
 }

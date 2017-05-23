@@ -10,8 +10,16 @@ if (process.env.NODE_ENV !== 'production') {
     sequelizeConf.options.logging = console.error;
 }
 
-const sequelize = new Sequelize(sequelizeConf.database, sequelizeConf.username, sequelizeConf.password, sequelizeConf.options),
-    User = sequelize.import<UserDefinition.UserInstance, UserDefinition.UserAttribute>('./User', UserDefinition.definition);
+const sequelize = new Sequelize(
+        sequelizeConf.database,
+        sequelizeConf.username,
+        sequelizeConf.password,
+        sequelizeConf.options,
+    ),
+    User = sequelize.import<UserDefinition.UserInstance, UserDefinition.UserAttribute>(
+        './User',
+        UserDefinition.definition,
+    );
 
 /* istanbul ignore next */
 const syncing = sequelize.sync().then(() => {

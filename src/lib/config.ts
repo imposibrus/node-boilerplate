@@ -1,9 +1,9 @@
 
 import * as nconf from 'nconf';
 import * as path from 'path';
+import packageJson = require('../../package.json');
 
-const packageJson = require('../../package.json'),
-    configEnv = process.env.NODE_ENV === 'development' ? '.dev' : '';
+const configEnv = process.env.NODE_ENV === 'development' ? '.dev' : '';
 
 nconf.argv()
     .env()

@@ -1,5 +1,7 @@
 
-interface NewRelicInterface { }
+interface NewRelicInterface {
+    getBrowserTimingHeader();
+}
 
 declare module 'newrelic' {
     export = newrelic;

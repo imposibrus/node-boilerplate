@@ -50,7 +50,7 @@ process.on('message', (message) => {
  */
 
 function normalizePort(val) {
-  let port = parseInt(val, 10);
+  const port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -74,7 +74,7 @@ function onError(error) {
     throw error;
   }
 
-  let bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
@@ -98,7 +98,7 @@ function onError(error) {
  */
 
 function onListening() {
-  let addr = server.address(),
+  const addr = server.address(),
       bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
 
   debugLog('Listening on ' + bind);

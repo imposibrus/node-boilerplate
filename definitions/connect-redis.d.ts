@@ -25,10 +25,7 @@ declare module 'connect-redis' {
             unref?: boolean;
             serializer?: Serializer | JSON;
         }
-        interface Serializer {
-            stringify: Function;
-            parse: Function;
-        }
+        interface Serializer extends JSON { }
     }
 
     export = s;

@@ -78,7 +78,7 @@ export function definition(sequelize: Sequelize.Sequelize, DataTypes: Sequelize.
         },
         setterMethods: {
             fullName(this: UserInstance, value: string) {
-                let names = value.split(' ');
+                const names = value.split(' ');
 
                 this.setDataValue('firstName', names.slice(0, -1).join(' '));
                 this.setDataValue('lastName', names.slice(-1).join(' '));

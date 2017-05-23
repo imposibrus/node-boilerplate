@@ -5,7 +5,7 @@ import RequestError from '../lib/RequestError';
 const router = express.Router();
 
 router.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-    let err = new RequestError('Not Found');
+    const err = new RequestError('Not Found');
 
     err.status = 404;
     next(err);

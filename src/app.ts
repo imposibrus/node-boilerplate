@@ -20,7 +20,7 @@ const app = express();
 // view engine setup
 app.set('view engine', 'njk');
 
-let env = nunjucks.configure('views', {
+const env = nunjucks.configure('views', {
     autoescape: true,
     express: app,
     noCache: app.get('env') === 'development',
@@ -61,7 +61,7 @@ app.use('/', routes);
 
 // catch 404 and forward to error handler
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-    let err = new RequestError('Not Found');
+    const err = new RequestError('Not Found');
 
     err.status = 404;
     next(err);

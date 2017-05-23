@@ -1,28 +1,28 @@
 
 import * as Noty from 'noty';
 
-require('noty.css');
+import 'noty.css';
 
-let notySuccess = function(text) {
+const notySuccess = (text) => {
       new Noty({
         type: 'success',
-        text: text || 'Success!'
+        text: text || 'Success!',
       }).show();
     },
-    notyError = function(text) {
+    notyError = (text) => {
       new Noty({
         type: 'error',
-        text: text || 'Something went wrong...'
+        text: text || 'Something went wrong...',
       }).show();
     },
-    notyAlert = function(text) {
+    notyAlert = (text) => {
       if (!text) {
         return false;
       }
 
       new Noty({
         type: 'alert',
-        text: text
+        text,
       }).show();
     };
 

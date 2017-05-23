@@ -12,7 +12,7 @@
         "../node_modules"
     ],
     "include": [
-        "../definitions/all.d.ts",
+        "../definitions/*.d.ts",
         "**/*.ts"
     ]
 }

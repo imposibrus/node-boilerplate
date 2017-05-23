@@ -1,9 +1,9 @@
 
 import * as $ from 'jquery';
 import {notySuccess} from './plugins';
-const newModule = require('./newModule.js');
+import * as newModule from './newModule.js';
 
-require('main.styl');
+import 'main.styl';
 
 class App {
   constructor() {
@@ -16,8 +16,7 @@ class App {
 }
 
 $(() => {
-
-  let app = new App();
+  const app = new App();
 
   app.log();
 
