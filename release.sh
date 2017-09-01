@@ -6,7 +6,7 @@ npm install; bower install
 
 # minify & compress files
 echo "minifying and compressing files";
-gulp build
+./node_modules/.bin/gulp build
 
 PROJECT_NAME="node-boilerplate"
 CWD="$PWD"
