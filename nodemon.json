@@ -1,3 +1,4 @@
 {
-  "ignore": ["dst/", "gulp-templates/", "logs/", "test/", "public/"]
+  "delay": 2000,
+  "watch": ["src"]
 }

@@ -4,7 +4,7 @@ const intel = require('intel'),
 
 intel.basicConfig({
     format: '[%(date)s] %(name)s.%(levelname)s: %(message)s',
-    level: intel[config.get('LOG_LEVEL')]
+    level: intel[config.get('LOG_LEVEL')] || intel.DEBUG,
 });
 
 module.exports = intel;

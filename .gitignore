@@ -1,26 +1,23 @@
 
 .idea
-atlassian-ide-plugin.xml
 node_modules
-
-public/bower_components
 
 public/storage
 !public/storage/.gitkeep
 
-public/css/main.css
-public/css/build.min.css
-public/css/*.map
-public/js/build.min.js
-public/js/*.map
-
 public/coverage
-/public/build
 
-/views/blocks
+public/build
+!public/build/.gitkeep
 
-/logs/
+views/blocks
+!views/blocks/.gitkeep
 
-/dst/
+logs/
+!logs/.gitkeep
+
+dst/
+!dst/.gitkeep
 
 npm-debug.log
+.DS_Store

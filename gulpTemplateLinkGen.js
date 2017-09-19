@@ -34,7 +34,7 @@ class GenStylesLinks extends LinksGenerator {
     }
 
     template(chunk) {
-        return chunk['css'] ? `link(rel="stylesheet", href="${chunk['css']}")\n` : '';
+        return chunk['css'] ? `<link rel="stylesheet" href="${chunk['css']}">\n` : '';
     }
 }
 
@@ -44,7 +44,7 @@ class GenScriptsLinks extends LinksGenerator {
     }
 
     template(chunk) {
-        return chunk['js'] ? `script(src="${chunk['js']}")\n` : '';
+        return chunk['js'] ? `<script src="${chunk['js']}"></script>\n` : '';
     }
 }
 

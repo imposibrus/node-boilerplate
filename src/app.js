@@ -1,27 +1,34 @@
 const express = require('express'),
     path = require('path'),
-    logger = require('morgan'),
-    config = require('./lib/config'),
+    morgan = require('morgan'),
     session = require('express-session'),
-    sessionStore = require('./lib/sessionStore'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
     postNormalize = require('post-normalize'),
-
+    nunjucks = require('nunjucks'),
     _ = require('lodash'),
-
+    flash = require('connect-flash'),
+    config = require('./lib/config'),
+    sessionStore = require('./lib/sessionStore'),
+    loadExtensionsAndFilters = require('./lib/loadExtensionsAndFilters'),
     routes = require('./routes'),
 
     app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, '../views'));
-app.set('view engine', 'pug');
+app.set('view engine', 'njk');
+
+const env = nunjucks.configure('views', {
+    autoescape: true,
+    express: app,
+    noCache: app.get('env') === 'development',
+});
+
+loadExtensionsAndFilters(env, nunjucks);
 
 /* istanbul ignore next */
 if (app.get('env') === 'development') {
-    app.use(logger('dev'));
-    //app.locals.pretty = true;
+    app.use(morgan('dev'));
 }
 
 app.use(bodyParser.json());
@@ -33,6 +40,7 @@ app.use(session({
     saveUninitialized: false,
     store: sessionStore,
 }));
+app.use(flash());
 
 app.use(postNormalize());
 

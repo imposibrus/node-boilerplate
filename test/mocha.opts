@@ -3,3 +3,4 @@
 --bail
 --recursive
 --check-leaks
+--full-trace

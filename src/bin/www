@@ -8,7 +8,8 @@ const newrelic = require('newrelic'),
     app = require('../app'),
     debug = require('debug')('node-boilerplate:server'),
     http = require('http'),
-    config = require('../lib/config');
+    config = require('../lib/config'),
+    port = normalizePort(config.get('PORT'));
 
 process.title = config.get('title');
 
@@ -16,7 +17,6 @@ process.title = config.get('title');
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(config.get('PORT'));
 app.set('port', port);
 
 app.locals.newrelic = newrelic;
