@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -13,7 +13,7 @@
     <link rel="shortcut icon" href="/public/favicon.ico">
     <link rel="apple-touch-icon-precomposed" href="/public/apple-touch-icon-precomposed.png">
 
-    {% include "blocks/_styles.njk" %}
+    {% include "blocks/_styles.njk" ignore missing %}
 
     <link rel="author" href="/humans.txt">
 </head>
@@ -28,7 +28,7 @@
     <footer id="footer"></footer>
 </div>
 
-{% include "blocks/_scripts.njk" %}
+{% include "blocks/_scripts.njk" ignore missing %}
 
 </body>
 </html>
