@@ -2,15 +2,11 @@
     "PORT": 3360,
     "title": "node:node-boilerplate",
     "sessionSecret": "node-boilerplate",
-    "sequelize": {
-        "database": "node-boilerplate",
-        "username": "node-boilerplate",
-        "password": "node-boilerplate",
-        "options": {
-            "host": "localhost",
-            "dialect": "postgres",
-            "logging": false
-        }
-    },
+    "DB_NAME": "node-boilerplate",
+    "DB_USER": "node-boilerplate",
+    "DB_PASSWORD": "node-boilerplate",
+    "DB_HOST": "localhost",
+    "DB_DIALECT": "postgres",
+    "DB_LOGGING": false,
     "LOG_LEVEL": "INFO"
 }

@@ -5,6 +5,7 @@
 |- src/                   - sources folder
 |---- bin/
 |------- www              - entry point. main executable
+|---- controllers/        - controllers for routes
 |---- lib/                - common libraries
 |---- models/             - DB models
 |---- routes/             - site routes

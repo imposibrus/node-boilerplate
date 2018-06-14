@@ -1,4 +1,3 @@
-
 const path = require('path'),
     webpack = require('webpack'),
     ExtractTextPlugin = require('extract-text-webpack-plugin'),
@@ -35,9 +34,8 @@ const path = require('path'),
             minimize: true,
             debug: true,
         }),
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoEmitOnErrorsPlugin()
-    ];
+    ],
+    mainEntry = ['./public/js/main.ts'];
 
 if (!isDev) {
     plugins.unshift(new webpack.optimize.UglifyJsPlugin({
@@ -46,11 +44,18 @@ if (!isDev) {
             warnings: true,
         },
     }));
+} else {
+    plugins.push(
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
+    );
+    mainEntry.push('webpack-hot-middleware/client?reload=true');
+    jsLoader.push('webpack-module-hot-accept');
 }
 
 module.exports = {
     entry: {
-        main: ['./public/js/main.ts', 'webpack-hot-middleware/client?reload=true'],
+        main: mainEntry,
     },
     output: {
         path: buildDir,
@@ -65,11 +70,11 @@ module.exports = {
                     {
                         loader: 'awesome-typescript-loader',
                         options: {
-                            configFileName: 'public/js/tsconfig.json'
+                            configFileName: 'public/js/tsconfig.json',
                         },
                     },
-                    'webpack-module-hot-accept'
-                ]
+                    'webpack-module-hot-accept',
+                ],
             },
             {
                 test: /\.css$/,
@@ -77,25 +82,25 @@ module.exports = {
                     fallback: 'style-loader',
                     use: 'css-loader',
                     publicPath: '../',
-                })
+                }),
             },
             {
                 test: /\.jpe?g$|\.gif$|\.png$|\.svg$/,
                 use: {
                     loader: 'url-loader',
                     options: {
-                        limit: 100000
-                    }
-                }
+                        limit: 100000,
+                    },
+                },
             },
             {
                 test:  /\.woff2?$|\.ttf$|\.eot$|\.wav$|\.mp3$/,
                 use: {
                     loader: 'file-loader',
                     options: {
-                        name: 'files/[hash].[ext]'
-                    }
-                }
+                        name: 'files/[hash].[ext]',
+                    },
+                },
             },
             {
                 test: /\.styl$/,
@@ -105,7 +110,7 @@ module.exports = {
                         {
                             loader: 'css-loader',
                             options: {
-                                sourceMap: true
+                                sourceMap: true,
                             }
                         },
                         {
@@ -113,15 +118,15 @@ module.exports = {
                             options: {
                                 sourceMap: true,
                                 use: [
-                                    autoprefixer()
+                                    autoprefixer(),
                                 ],
-                            }
-                        }
+                            },
+                        },
                     ],
-                    publicPath: '../'
-                })
-            }
-        ]
+                    publicPath: '../',
+                }),
+            },
+        ],
     },
     plugins: plugins,
     resolve: {

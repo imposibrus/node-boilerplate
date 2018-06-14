@@ -10,12 +10,12 @@ const fs = require('fs'),
     $ = require('gulp-load-plugins')({
         pattern: ['gulp-*', 'gulp.*'],
     }),
-    tsProject = $.typescript.createProject('src/tsconfig.json'),
-    buildDir = path.join(__dirname, 'public', 'build'),
-    viewsDir = path.join(__dirname, 'views'),
+    {GenStylesLinks, GenScriptsLinks} = require('./gulpTemplateLinkGen'),
     readFileAsync = Promise.promisify(fs.readFile),
     writeFileAsync = Promise.promisify(fs.writeFile),
-    {GenStylesLinks, GenScriptsLinks} = require('./gulpTemplateLinkGen');
+    buildDir = path.join(__dirname, 'public', 'build'),
+    viewsDir = path.join(__dirname, 'views'),
+    tsProject = $.typescript.createProject('src/tsconfig.json');
 
 gulp.task('webpack', (cb) => {
     webpackCompiler.run(cb);
@@ -69,7 +69,7 @@ gulp.task('watch', (cb) => {
         online: false,
         reloadThrottle: 500,
         proxy: {
-            target: 'node-boilerplate.local',
+            target: 'localhost:3360',
             middleware: [
                 webpackHotMiddleware(webpackCompiler),
                 (req, res, next) => {
