@@ -1,7 +1,8 @@
 
-const server = require('../../src/bin/www'),
-    request = require('supertest');
+import * as request from 'supertest';
+import {describe, it} from 'mocha';
 
+import * as server from '../../src/bin/www';
 
 describe('GET /', () => {
     it('should respond with main page', () => {
@@ -20,4 +21,3 @@ describe('GET /404', () => {
             .expect(404);
     });
 });
-

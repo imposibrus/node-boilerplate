@@ -1,96 +1,72 @@
 
-import * as Sequelize from 'sequelize';
-import {createHmac} from 'crypto';
-import config from '../lib/config';
+import {
+    Table, Column, Model, AllowNull, NotEmpty, Default, BeforeCreate, BeforeUpdate, Unique
+    , IsEmail} from 'sequelize-typescript';
+import {cloneDeep, omit} from 'lodash';
 
-const beforeSaveHook = (user: UserInstance/*, options*/) => {
-    if (user.changed('password')) {
-        user.password = user.hashPassword(user.password);
+import hashPassword from '../lib/hashPassword';
+
+@Table({
+    timestamps: true,
+    paranoid: true,
+    freezeTableName: true,
+    tableName: 'Users',
+})
+export default class User extends Model<User> {
+    @Column
+    public firstName: string;
+
+    @Column
+    public lastName: string;
+
+    @Column
+    public phone: string;
+
+    @IsEmail
+    @Column
+    public email: string;
+
+    @AllowNull(false)
+    @NotEmpty
+    @Unique
+    @Column
+    public login: string;
+
+    @AllowNull(false)
+    @NotEmpty
+    @Column
+    public password: string;
+
+    @Default(false)
+    @Column
+    public isAdmin: boolean;
+
+    get fullName() {
+        return this.firstName + ' ' + this.lastName;
     }
-};
+    set fullName(value: string) {
+        const names = value.split(' ');
 
-export interface UserAttribute {
-    id: number;
-    firstName?: string;
-    lastName?: string;
-    phone?: string;
-    email?: string;
-    login: string;
-    password: string;
-    isAdmin: boolean;
-}
+        this.setDataValue('firstName', names.slice(0, -1).join(' '));
+        this.setDataValue('lastName', names.slice(-1).join(' '));
+    }
 
-export interface UserInstance extends Sequelize.Instance<UserAttribute>, UserAttribute {
-    fullName(): string;
-    fullName(name: string): void;
-    validPassword(plainPassword: string): boolean;
-    hashPassword(plainPassword: string): string;
-}
+    public validPassword(pass: string) {
+        return this.password === hashPassword(pass);
+    }
 
-export interface UserModel extends Sequelize.Model<UserInstance, UserAttribute> {}
+    public toJSON() {
+        const plainObj = cloneDeep(this.get()),
+            privateAttributes: string[] = ['password', 'fullName', 'createdAt', 'updatedAt', 'deletedAt'];
 
-export function definition(sequelize: Sequelize.Sequelize, DataTypes: Sequelize.DataTypes) {
-    return sequelize.define<UserInstance, UserAttribute>('User', {
-        firstName: {
-            type: DataTypes.STRING,
-        },
-        lastName: {
-            type: DataTypes.STRING,
-        },
-        phone: {
-            type: DataTypes.STRING,
-        },
-        email: {
-            type: DataTypes.STRING,
-            validate: {
-                isEmail: true,
-            },
-        },
-        login: {
-            type: DataTypes.STRING,
-            unique: true,
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-            },
-        },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-            },
-        },
-        isAdmin: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false,
-        },
-    }, {
-        paranoid: true,
-        hooks: {
-            beforeCreate: beforeSaveHook,
-            beforeUpdate: beforeSaveHook,
-        },
-        getterMethods: {
-            fullName() {
-                return this.firstName + ' ' + this.lastName;
-            },
-        },
-        setterMethods: {
-            fullName(this: UserInstance, value: string) {
-                const names = value.split(' ');
+        return omit(plainObj, privateAttributes);
+    }
 
-                this.setDataValue('firstName', names.slice(0, -1).join(' '));
-                this.setDataValue('lastName', names.slice(-1).join(' '));
-            },
-        },
-        instanceMethods: {
-            validPassword(this: UserInstance, plainPassword: string): boolean {
-                return this.password === this.hashPassword(plainPassword);
-            },
-            hashPassword(this: UserInstance, plainPassword: string): string {
-                return createHmac('sha256', config.get('sessionSecret')).update(plainPassword).digest('hex');
-            },
-        },
-    });
+    @BeforeCreate
+    @BeforeUpdate
+    public static userPasswordChange(user: User) {
+        if (user.changed('password')) {
+            user.password = hashPassword(user.password);
+        }
+    }
 }

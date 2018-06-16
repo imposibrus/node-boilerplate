@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
-# install dependencies
 echo "installing dependencies";
-npm install; bower install
+npm install
 
-# minify & compress files
-echo "minifying and compressing files";
+echo "build project";
 ./node_modules/.bin/gulp build
 
 PROJECT_NAME="node-boilerplate"
@@ -23,14 +21,10 @@ function update_supervisor_config {
   git checkout supervisor.conf
 }
 
-echo "Enter NEWRELIC_LICENSE key:"
-read NEWRELIC_LICENSE
-
 echo "replacing template variables in config files";
 sed -i "s:{{CWD}}:$CWD:g" nginx.conf
 sed -i "s:{{USER}}:$USER:g" supervisor.conf
 sed -i "s:{{CWD}}:$CWD:g" supervisor.conf
-sed -i "s:NEWRELIC_LICENSE=:NEWRELIC_LICENSE=$NEWRELIC_LICENSE:g" supervisor.conf
 
 if [ -f "/etc/supervisor/conf.d/$PROJECT_NAME.conf" ]; then
   # file exist
@@ -67,7 +61,7 @@ if ! [ -f "/etc/nginx/sites-enabled/$PROJECT_NAME.conf" ]; then
 fi
 
 echo "start reloading nginx config";
-sudo /etc/init.d/nginx reload
+sudo service nginx reload
 
 echo "restoring nginx local config file";
 cd $CWD

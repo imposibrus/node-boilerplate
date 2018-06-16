@@ -1,0 +1,16 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "allowJs": false,
+        "inlineSources": false,
+        "sourceMap": false,
+        "inlineSourceMap": false
+    },
+    "exclude": [
+        "../node_modules"
+    ],
+    "include": [
+        "../definitions/*.d.ts",
+        "./**/*.ts"
+    ]
+}

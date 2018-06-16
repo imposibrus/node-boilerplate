@@ -1,15 +1,18 @@
 
-const models = require('../../src/models');
+import 'should';
+import {describe, beforeEach, it} from 'mocha';
+
+import * as models from '../../src/models';
 
 describe('User model', () => {
-    let userInstance;
+    let userInstance: models.User;
 
     beforeEach(() => {
         userInstance = models.User.build({
             firstName: 'Vadim',
             lastName: 'Petrov',
             phone: '1234567890',
-            email: 'email@mail.ru'
+            email: 'email@mail.ru',
         });
     });
 

@@ -5,19 +5,12 @@ node_modules
 public/storage
 !public/storage/.gitkeep
 
-public/coverage
-
-public/build
-!public/build/.gitkeep
-
-views/blocks
-!views/blocks/.gitkeep
-
-logs/
-!logs/.gitkeep
-
 dst/
 !dst/.gitkeep
+/coverage/
+/build/
 
 npm-debug.log
 .DS_Store
+
+.env

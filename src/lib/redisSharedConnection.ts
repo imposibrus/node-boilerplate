@@ -6,7 +6,7 @@ const redis = new Redis();
 let redisReConnectAttempts = 0;
 
 /* istanbul ignore next */
-redis.on('error', (err) => {
+redis.on('error', (err: Error) => {
     redisReConnectAttempts++;
 
     if (redisReConnectAttempts > 5) {

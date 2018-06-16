@@ -1,5 +1,6 @@
 
 import * as express from 'express';
+
 import RequestError from '../lib/RequestError';
 
 const router = express.Router();

@@ -1,12 +1,12 @@
 
 interface IntelInterface extends IntelLoggerInstance {
-    basicConfig(options);
+    basicConfig(options: any): IntelLoggerInstance;
     getLogger(loggerName?: string): IntelLoggerInstance;
 }
 
 interface IntelLoggerInstance {
-    critical(type: any, ...errors);
-    debug(type: any, ...errors);
+    critical(type: any, ...errors: any[]): any;
+    debug(type: any, ...errors: any[]): any;
 }
 
 declare module 'intel' {

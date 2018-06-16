@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2015",
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitAny": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "inlineSourceMap": true,
+        "inlineSources": true,
+        "strict": true,
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "lib": ["es5", "es2015", "es2015.collection", "es2017.object", "dom"],
+        "outDir": "dst",
+        "allowJs": true,
+        "strictPropertyInitialization": false
+    },
+    "exclude": [
+        "./node_modules"
+    ],
+    "include": [
+        "./definitions/*.d.ts",
+        "./src/**/*.ts"
+    ]
+}
