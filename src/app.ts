@@ -22,10 +22,7 @@ app.use('/', routes);
 // catch 404 and forward to error handler
 /* istanbul ignore next */
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const err = new RequestError('Not Found');
-
-    err.status = 404;
-    next(err);
+    next(new RequestError('Not Found', 404));
 });
 
 // error handler

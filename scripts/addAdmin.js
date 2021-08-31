@@ -1,4 +1,3 @@
-
 const readline = require('readline'),
     models = require('../dst/models'),
     rl = readline.createInterface({

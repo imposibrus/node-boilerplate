@@ -1,4 +1,3 @@
-
 import {Request, Response} from 'express';
 
 function homePageController(req: Request, res: Response) {

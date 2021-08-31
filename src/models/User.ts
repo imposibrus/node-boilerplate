@@ -1,4 +1,3 @@
-
 import {
     Table, Column, Model, AllowNull, NotEmpty, Default, BeforeCreate, BeforeUpdate, Unique
     , IsEmail} from 'sequelize-typescript';
@@ -6,13 +5,24 @@ import {cloneDeep, omit} from 'lodash';
 
 import hashPassword from '../lib/hashPassword';
 
+export interface IUser {
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    email?: string;
+    login: string;
+    password: string;
+    isAdmin?: boolean;
+    fullName?: string;
+}
+
 @Table({
     timestamps: true,
     paranoid: true,
     freezeTableName: true,
     tableName: 'Users',
 })
-export default class User extends Model<User> {
+export default class User extends Model<User, IUser> {
     @Column
     public firstName: string;
 

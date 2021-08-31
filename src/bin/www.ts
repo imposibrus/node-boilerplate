@@ -1,17 +1,16 @@
 #!/usr/bin/env node
 
 import * as dotenv from 'dotenv';
+import * as path from 'path';
 
-dotenv.config();
+dotenv.config({path: path.resolve('deploy', '.env')})
 
 import {Server, createServer} from 'http';
 import {Socket} from 'net';
 import {unlinkSync} from 'fs';
 import * as debug from 'debug';
-import * as Umzug from 'umzug';
 
 import app from '../app';
-import {sequelize} from '../models';
 
 process.title = String(process.env.TITLE);
 
@@ -26,37 +25,7 @@ let server: Server | null = null;
 app.set('port', port);
 
 if (process.argv.findIndex((a) => a.startsWith('db:migrate')) !== -1) {
-    const umzug = new Umzug({
-            logging: console.error,
-            storage: 'sequelize',
-            storageOptions: {sequelize},
-            migrations: {
-                params: [sequelize.getQueryInterface(), sequelize.Sequelize],
-            },
-        }),
-        isUndo = process.argv.indexOf('db:migrate:undo') !== -1;
-
-    (async () => {
-        try {
-            console.log('Pending migrations count:', (await umzug.pending()).length);
-
-            if (isUndo) {
-                console.log('Down migrations');
-                await umzug.down();
-            } else {
-                console.log('Up migrations');
-                await umzug.up();
-            }
-        } catch (err) {
-            console.error('Migration error:');
-            console.error(err);
-            process.exit(-1);
-            return;
-        }
-
-        console.log('Migration completes successfully!');
-        process.exit(0);
-    })();
+    require('./migrate');
 } else {
     /**
      * Create HTTP server.

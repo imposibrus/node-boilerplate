@@ -1,4 +1,3 @@
-
 import {before} from 'mocha';
 
 import * as models from '../../src/models';

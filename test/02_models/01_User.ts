@@ -1,4 +1,3 @@
-
 import 'should';
 import {describe, beforeEach, it} from 'mocha';
 
@@ -13,6 +12,8 @@ describe('User model', () => {
             lastName: 'Petrov',
             phone: '1234567890',
             email: 'email@mail.ru',
+            login: 'login',
+            password: 'password',
         });
     });
 
@@ -25,5 +26,21 @@ describe('User model', () => {
         userInstance.firstName.should.be.equal('Yuri');
         userInstance.lastName.should.be.equal('Nikolaev');
         userInstance.fullName.should.be.equal('Yuri Nikolaev');
+    });
+
+    it('should check password and return false', () => {
+        userInstance.validPassword('wrong password').should.be.equal(false);
+    });
+
+    it('should JSON representation omit private fields', () => {
+        userInstance.toJSON().should.be.eql({
+            id: null,
+            isAdmin: false,
+            firstName: 'Vadim',
+            lastName: 'Petrov',
+            phone: '1234567890',
+            email: 'email@mail.ru',
+            login: 'login',
+        });
     });
 });
