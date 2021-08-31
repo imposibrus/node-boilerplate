@@ -1,8 +1,0 @@
---require ./testSetup
---timeout 5000
---bail
---recursive
---check-leaks
---compilers ts:ts-node/register
---require source-map-support/register
---full-trace

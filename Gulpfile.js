@@ -1,9 +1,8 @@
-
 const gulp = require('gulp'),
     $ = require('gulp-load-plugins')({
         pattern: ['gulp-*', 'gulp.*'],
     }),
-    tsProject = $.typescript.createProject('src/tsconfig.json');
+    tsProject = $.typescript.createProject('tsconfig.json');
 
 gulp.task('compile:server', () => {
     return gulp.src(['src/**/*.ts', 'definitions/**.ts'])
