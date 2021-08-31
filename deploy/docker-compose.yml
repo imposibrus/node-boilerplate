@@ -1,0 +1,47 @@
+version: '3.9'
+
+volumes:
+  pgdata:
+    name: node-boilerplate_pgdata
+  redisdata:
+    name: node-boilerplate_redisdata
+  storage:
+    name: node-boilerplate_storage
+networks:
+  node-boilerplate:
+    name: node-boilerplate
+
+services:
+  db:
+    image: 'postgres:13.3-alpine'
+    restart: always
+    env_file: .env
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    networks:
+      node-boilerplate:
+
+  redis:
+    image: 'redis:6.2.5-alpine'
+    restart: always
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redisdata:/data
+    networks:
+      node-boilerplate:
+
+  web:
+    build:
+      context: ../
+      dockerfile: deploy/Dockerfile
+    restart: always
+    init: true
+    env_file: .env
+    volumes:
+      - storage:/app/storage
+    networks:
+      node-boilerplate:
