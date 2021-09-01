@@ -1,5 +1,17 @@
 # node-boilerplate
 
+A backend-only template for the Node.js project.
+
+## Tech stack
+
+- Node.js, Express
+- Typescript
+- Mocha, Should, Nyc, Supertest
+- Redis
+- Docker, Docker Compose, dotenv
+- Postgresql, Sequelize
+- Gulp
+
 ## Installation
 
 - `git clone git@gitlab.codezavod.ru:Codezavod-Projects/node-boilerplate.git && cd node-boilerplate`
